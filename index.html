@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      function createUI() {
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.className = 'myInput';
+        input.placeholder = 'Введите текст и эмоджи...';
+        document.body.appendChild(input);
+        
+        const button = document.createElement('button');
+        button.className = 'emoji-button';
+        button.textContent = 'emoji';
+        document.body.appendChild(button);
+        
+        const emojiPicker = document.createElement('emoji-picker');
+        emojiPicker.className = 'light';
+        document.body.appendChild(emojiPicker);
+      }
+
+      function eventListener() {
+        const myInput = document.querySelector('.myInput');
+        const emojiButton = document.querySelector('.emoji-button');
+        const picker = document.querySelector('emoji-picker');
+        picker.style.display = 'none';
+        
+        emojiButton.addEventListener('click', event => {
+          picker.style.display = picker.style.display === 'none' ? '' : 'none';
+        })
+
+        picker.addEventListener('emoji-click', event => {
+          const emoji = event.detail.unicode;
+          const start = myInput.selectionStart;
+          const end = myInput.selectionEnd;
+          
+          myInput.value = myInput.value.slice(0, start) + emoji + myInput.value.slice(end);
+          const newPos = start + emoji.length;
+          myInput.focus();
+          myInput.setSelectionRange(newPos, newPos);
+
+          const changeEvent = new Event('change', { bubbles: true });
+          myInput.dispatchEvent(changeEvent);
+        })
+
+        myInput.addEventListener('change', event => {
+          console.log(myInput.value);
+        })
+      }
+      createUI();
+      eventListener();
+    });
+  </script>
+  <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js"></script>
+</body>
+</html>
